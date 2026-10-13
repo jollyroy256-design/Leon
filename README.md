@@ -29,3 +29,11 @@ Before a production launch, add confirmed company contact details, approved serv
 ## Brand and imagery
 
 The LEON logo is based on the supplied brand artwork. Workforce imagery was created with OpenAI's image generation tool for this website.
+
+## Consultation calendar
+
+The homepage calendar collects a preferred date (tomorrow through the next 90 days) and time in Asia/Kolkata (IST). Continuing attaches the request to the enquiry form, where it can be reviewed, changed or removed. On submission, the preference is saved with the existing enquiry message; it does not reserve a slot or send a calendar invitation. No live availability or scheduling provider is connected.
+
+## Vercel deployment
+
+`vercel.json` explicitly selects a static deployment with `npm run build` and output directory `dist`. The build copies only public HTML, CSS, JavaScript and assets; it never publishes local enquiry data or the development server. The `/api/enquiries` function returns a clear 503 JSON response until a persistent production delivery service is configured. Local `npm start` retains local enquiry storage. The published page accurately explains that online enquiries and bookings are not connected.

@@ -10,7 +10,7 @@ function updateService(){const map={'Overseas work':['Your trade or role','e.g. 
 service.addEventListener('change',updateService);
 document.querySelectorAll('[data-service]').forEach(button=>button.addEventListener('click',()=>{service.value=button.dataset.service;interest.value=button.dataset.interest||'';updateService();document.querySelector('#enquire').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});document.querySelector('#name').focus({preventScroll:true});}));
 const phone=document.querySelector('#phone');phone.addEventListener('input',()=>phone.setCustomValidity(''));
-form.addEventListener('submit',async e=>{e.preventDefault();const normalized=phone.value.replace(/[\s-]/g,'');if(!/^(?:\+91)?[6-9]\d{9}$/.test(normalized)){phone.setCustomValidity('Enter a 10-digit Indian mobile number, optionally beginning with +91.');phone.reportValidity();return;}const status=document.querySelector('#form-status'),submit=form.querySelector('[type="submit"]');submit.disabled=true;submit.textContent='Saving enquiry…';status.className='';status.textContent='';const data=Object.fromEntries(new FormData(form));data.phone=normalized;data.consent=document.querySelector('#consent').checked;try{const response=await fetch('/api/enquiries',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});const result=await response.json();if(!response.ok)throw Error(result.error||'Unable to save. Please try again.');status.className='success';status.textContent=`${result.message} Reference: ${result.id}`;form.reset();updateService();}catch(error){status.className='error';status.textContent=error.message||'Connection failed. Please try again.';}finally{submit.disabled=false;submit.innerHTML='Save my enquiry <span aria-hidden="true">↗</span>';}});
+form.addEventListener('submit',async e=>{e.preventDefault();const normalized=phone.value.replace(/[\s-]/g,'');if(!/^(?:\+91)?[6-9]\d{9}$/.test(normalized)){phone.setCustomValidity('Enter a 10-digit Indian mobile number, optionally beginning with +91.');phone.reportValidity();return;}const status=document.querySelector('#form-status'),submit=form.querySelector('[type="submit"]');submit.disabled=true;submit.textContent='Saving enquiry…';status.className='';status.textContent='';const data=Object.fromEntries(new FormData(form));if(pendingBooking){if(!validBookingDate(pendingBooking.date)){status.className='error';status.textContent='Your preferred date has passed. Please select a new date in the calendar.';submit.disabled=false;submit.innerHTML='Save my enquiry <span aria-hidden="true">↗</span>';return;}data.message=`Consultation request: ${pendingBooking.date} at ${pendingBooking.time} IST (Asia/Kolkata). Subject to confirmation.\n\n${data.message||''}`;}data.phone=normalized;data.consent=document.querySelector('#consent').checked;try{const response=await fetch('/api/enquiries',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});const result=await response.json();if(!response.ok)throw Error(result.error||'Unable to save. Please try again.');status.className='success';status.textContent=`${result.message} Reference: ${result.id}`;form.reset();updateService();}catch(error){status.className='error';status.textContent=error.message||'Connection failed. Please try again.';}finally{submit.disabled=false;submit.innerHTML='Save my enquiry <span aria-hidden="true">↗</span>';}});
 const dialog=document.querySelector('#privacy-dialog');document.querySelectorAll('.privacy-link').forEach(button=>button.addEventListener('click',()=>dialog.showModal()));document.querySelectorAll('.dialog-close,.close-privacy').forEach(button=>button.addEventListener('click',()=>dialog.close()));dialog.addEventListener('click',e=>{if(e.target===dialog){const box=dialog.getBoundingClientRect();if(e.clientX<box.left||e.clientX>box.right||e.clientY<box.top||e.clientY>box.bottom)dialog.close();}});document.querySelector('#year').textContent=new Date().getFullYear();
 const header = document.querySelector('header');
 window.addEventListener('scroll', () => header.classList.toggle('scrolled', window.scrollY > 40), {passive:true});
@@ -28,33 +28,49 @@ const sectionObserver = new IntersectionObserver(entries => {
 }, {rootMargin:'-15% 0px -65% 0px'});
 document.querySelectorAll('#services,#opportunities,#process,#employers,#enquire').forEach(section => sectionObserver.observe(section));
 
-// Scroll-linked depth keeps native scrolling and reduces movement on small screens.
+// One time-based animation loop eases depth without changing native scroll behavior.
 const heroScene = document.querySelector('.hero');
 const motionPreference = matchMedia('(prefers-reduced-motion: reduce)');
-const photoLayers = [...document.querySelectorAll('.hero-visual, .role-image')];
+const finePointer = matchMedia('(hover: hover) and (pointer: fine)');
+const photoLayers = [...document.querySelectorAll('.role-image')];
 const visiblePhotos = new Set();
-let motionFrame = 0;
-function paintScrollDepth() {
+const photoOffsets = new Map();
+let motionFrame = 0, lastFrame = 0;
+let pointerX = 0, pointerY = 0, currentX = 0, currentY = 0;
+const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+function paintScrollDepth(now) {
   motionFrame = 0;
   if (document.hidden) return;
-  const viewport = window.innerHeight;
-  const travel = document.documentElement.scrollHeight - viewport;
-  header.style.setProperty('--scroll-progress', travel > 0 ? Math.min(1, window.scrollY / travel) : 0);
-  if (motionPreference.matches) return;
-  const mobile = window.innerWidth <= 600;
-  const heroBounds = heroScene.getBoundingClientRect();
-  const heroProgress = Math.max(0, Math.min(1, -heroBounds.top / heroBounds.height));
-  const depth = mobile ? 0.35 : 1;
-  heroScene.style.setProperty('--portrait-drift', `${heroProgress * 38 * depth}px`);
-  heroScene.style.setProperty('--route-drift', `${heroProgress * -42 * depth}px`);
-  heroScene.style.setProperty('--ticket-drift', `${heroProgress * -22 * depth}px`);
+  const travel = document.documentElement.scrollHeight - innerHeight;
+  header.style.setProperty('--scroll-progress', travel > 0 ? clamp(scrollY / travel, 0, 1) : 0);
+  if (motionPreference.matches) { lastFrame = 0; return; }
+  const delta = lastFrame ? Math.min(now - lastFrame, 64) : 16.67;
+  lastFrame = now;
+  const easing = 1 - Math.exp(-delta / 95);
+  const bounds = heroScene.getBoundingClientRect();
+  const mobile = innerWidth <= 600;
+  const progress = clamp(-bounds.top / bounds.height, 0, 1);
+  const targetX = finePointer.matches && !mobile ? pointerX : 0;
+  const targetY = progress * (mobile ? 24 : 65) + (finePointer.matches && !mobile ? pointerY : 0);
+  currentX += (targetX - currentX) * easing;
+  currentY += (targetY - currentY) * easing;
+  heroScene.style.setProperty('--landscape-x', `${currentX.toFixed(3)}px`);
+  heroScene.style.setProperty('--landscape-y', `${currentY.toFixed(3)}px`);
+  let unsettled = Math.abs(targetX - currentX) > .03 || Math.abs(targetY - currentY) > .03;
+  // Read all visible geometry before writing transforms.
   const updates = [...visiblePhotos].map(layer => {
-    const bounds = layer.getBoundingClientRect();
-    const progress = Math.max(-1, Math.min(1, (viewport - bounds.top * 2 - bounds.height) / (viewport + bounds.height)));
-    const strength = layer.classList.contains('hero-visual') ? (mobile ? 12 : 36) : (mobile ? 7 : 18);
-    return [layer, progress * strength];
+    const rect = layer.getBoundingClientRect();
+    const progress = clamp((innerHeight - rect.top * 2 - rect.height) / (innerHeight + rect.height), -1, 1);
+    const target = progress * (mobile ? 8 : 16);
+    const current = photoOffsets.get(layer) || 0;
+    const next = current + (target - current) * easing;
+    if (Math.abs(next - target) > .03) unsettled = true;
+    photoOffsets.set(layer, next);
+    return [layer, next];
   });
-  updates.forEach(([layer, offset]) => layer.style.setProperty('--photo-offset', `${offset.toFixed(2)}px`));
+  updates.forEach(([layer, offset]) => layer.style.setProperty('--photo-offset', `${offset.toFixed(3)}px`));
+  if (unsettled) motionFrame = requestAnimationFrame(paintScrollDepth);
+  else lastFrame = 0;
 }
 function scheduleScrollDepth() {
   if (!motionFrame && !document.hidden) motionFrame = requestAnimationFrame(paintScrollDepth);
@@ -64,32 +80,94 @@ const photoObserver = new IntersectionObserver(entries => {
   scheduleScrollDepth();
 });
 photoLayers.forEach(layer => photoObserver.observe(layer));
+function resetPointer() { pointerX = 0; pointerY = 0; scheduleScrollDepth(); }
+heroScene.addEventListener('pointermove', event => {
+  if (motionPreference.matches || !finePointer.matches || innerWidth <= 600) return;
+  const rect = heroScene.getBoundingClientRect();
+  pointerX = clamp((event.clientX - rect.left) / rect.width - .5, -.5, .5) * -14;
+  pointerY = clamp((event.clientY - rect.top) / rect.height - .5, -.5, .5) * -10;
+  scheduleScrollDepth();
+}, {passive:true});
+heroScene.addEventListener('pointerleave', resetPointer);
 function syncMotionPreference() {
   document.body.classList.toggle('parallax-enabled', !motionPreference.matches);
-  if (motionPreference.matches) {
-    photoLayers.forEach(layer => layer.style.removeProperty('--photo-offset'));
-    ['--portrait-drift','--route-drift','--ticket-drift','--pointer-x','--pointer-y'].forEach(name => heroScene.style.removeProperty(name));
-  }
+  if (motionFrame) cancelAnimationFrame(motionFrame);
+  motionFrame = 0; lastFrame = 0;
+  pointerX = pointerY = currentX = currentY = 0;
+  photoOffsets.clear();
+  ['--landscape-x', '--landscape-y'].forEach(name => heroScene.style.removeProperty(name));
+  photoLayers.forEach(layer => layer.style.removeProperty('--photo-offset'));
   scheduleScrollDepth();
 }
 window.addEventListener('scroll', scheduleScrollDepth, {passive:true});
-window.addEventListener('resize', scheduleScrollDepth, {passive:true});
+window.addEventListener('resize', resetPointer, {passive:true});
 motionPreference.addEventListener('change', syncMotionPreference);
+finePointer.addEventListener('change', resetPointer);
 document.addEventListener('visibilitychange', () => {
-  if (document.hidden && motionFrame) { cancelAnimationFrame(motionFrame); motionFrame = 0; }
+  if (document.hidden) { cancelAnimationFrame(motionFrame); motionFrame = 0; lastFrame = 0; }
   else scheduleScrollDepth();
 });
 syncMotionPreference();
-
-const heroStage = document.querySelector('.hero-stage');
-const finePointer = matchMedia('(hover: hover) and (pointer: fine)');
-heroStage.addEventListener('pointermove', event => {
-  if (motionPreference.matches || !finePointer.matches) return;
-  const bounds = heroStage.getBoundingClientRect();
-  heroScene.style.setProperty('--pointer-x', `${((event.clientX - bounds.left) / bounds.width - .5) * 12}px`);
-  heroScene.style.setProperty('--pointer-y', `${((event.clientY - bounds.top) / bounds.height - .5) * 10}px`);
+// Consultation requests use India time and the existing local enquiry workflow.
+let pendingBooking = null;
+const bookingTime = document.querySelector('#booking-time');
+const bookingSelection = document.querySelector('#booking-selection');
+const bookingSummary = document.querySelector('#booking-summary');
+const calendarDays = document.querySelector('#calendar-days');
+const calendarPrev = document.querySelector('#calendar-prev');
+const calendarNext = document.querySelector('#calendar-next');
+function indiaToday() {
+  const parts = new Intl.DateTimeFormat('en-GB', {timeZone:'Asia/Kolkata',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());
+  const part = key => parts.find(p => p.type === key).value;
+  return new Date(`${part('year')}-${part('month')}-${part('day')}T00:00:00Z`);
+}
+function bookingRange() {
+  const first = indiaToday(); first.setUTCDate(first.getUTCDate()+1);
+  const last = indiaToday(); last.setUTCDate(last.getUTCDate()+90);
+  return {first,last};
+}
+const dateKey = date => date.toISOString().slice(0,10);
+const dateLabel = date => new Intl.DateTimeFormat('en-GB',{timeZone:'UTC',weekday:'long',day:'numeric',month:'long',year:'numeric'}).format(date);
+let calendarMonth = bookingRange().first;
+calendarMonth = new Date(Date.UTC(calendarMonth.getUTCFullYear(), calendarMonth.getUTCMonth(),1));
+let chosenDate = '';
+function renderCalendar() {
+  const {first,last} = bookingRange();
+  const year = calendarMonth.getUTCFullYear(), month = calendarMonth.getUTCMonth();
+  document.querySelector('#calendar-month').textContent = new Intl.DateTimeFormat('en-GB',{timeZone:'UTC',month:'long',year:'numeric'}).format(calendarMonth);
+  calendarPrev.disabled = new Date(Date.UTC(year,month,0)) < first;
+  calendarNext.disabled = new Date(Date.UTC(year,month+1,1)) > last;
+  calendarDays.replaceChildren();
+  const offset = (calendarMonth.getUTCDay()+6)%7;
+  for(let i=0;i<offset;i++) {const blank=document.createElement('span');blank.setAttribute('aria-hidden','true');calendarDays.append(blank);}
+  const count = new Date(Date.UTC(year,month+1,0)).getUTCDate();
+  for(let day=1;day<=count;day++) {
+    const date = new Date(Date.UTC(year,month,day));
+    const key = dateKey(date), button = document.createElement('button');
+    button.type='button';button.textContent=day;button.dataset.date=key;
+    button.disabled=date<first||date>last;
+    button.setAttribute('aria-label',dateLabel(date));button.setAttribute('aria-pressed',String(chosenDate===key));
+    button.addEventListener('click',()=>{
+      chosenDate=key;
+      calendarDays.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));
+      bookingSelection.textContent=dateLabel(date);
+    });
+    calendarDays.append(button);
+  }
+}
+calendarPrev.addEventListener('click',()=>{calendarMonth.setUTCMonth(calendarMonth.getUTCMonth()-1);renderCalendar();});
+calendarNext.addEventListener('click',()=>{calendarMonth.setUTCMonth(calendarMonth.getUTCMonth()+1);renderCalendar();});
+function validBookingDate(key) {const {first,last}=bookingRange();return key>=dateKey(first)&&key<=dateKey(last);}
+document.querySelector('#booking-continue').addEventListener('click',()=>{
+  if(!chosenDate||!validBookingDate(chosenDate)) {bookingSelection.textContent='Please choose a future date within the next 90 days.';renderCalendar();calendarDays.querySelector('button:not(:disabled)')?.focus();return;}
+  if(!bookingTime.reportValidity()) return;
+  pendingBooking={date:chosenDate,time:bookingTime.value};
+  bookingSummary.querySelector('p').textContent=`${dateLabel(new Date(chosenDate+'T00:00:00Z'))} at ${bookingTime.value} IST. Subject to confirmation.`;
+  bookingSummary.hidden=false;
+  document.querySelector('#enquire').scrollIntoView({behavior:motionPreference.matches?'instant':'smooth'});
+  document.querySelector('#name').focus({preventScroll:true});
 });
-heroStage.addEventListener('pointerleave', () => {
-  heroScene.style.setProperty('--pointer-x', '0px');
-  heroScene.style.setProperty('--pointer-y', '0px');
-});
+function clearBooking() {pendingBooking=null;chosenDate='';bookingTime.value='';bookingSummary.hidden=true;bookingSelection.textContent='Select a date to get started.';renderCalendar();}
+document.querySelector('#booking-remove').addEventListener('click',()=>{clearBooking();document.querySelector('#service').focus();});
+form.addEventListener('reset',clearBooking);
+renderCalendar();

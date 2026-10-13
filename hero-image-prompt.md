@@ -1,0 +1,6 @@
+# Hero image generation
+
+Created with the built-in image generator. Final asset: `assets/hero-departure.webp`.
+
+Prompt:
+Use case: photorealistic-natural. Create a premium editorial panoramic website hero photograph for LEON, an Indian overseas recruitment and travel consultancy. Scene: beautifully designed contemporary international airport departure concourse with very tall glass windows, elegant structural lines receding into the distance, a passenger aircraft clearly visible outside on the right, distant runway and soft blue horizon, early morning daylight. Two Indian adult professionals in smart casual everyday clothing seen from behind, walking with modest rolling luggage toward the windows on the right third, natural candid human scale, no posed faces, no business suits required. Composition: wide cinematic 16:9 landscape, architectural depth, uncluttered left half in softly shadowed deep navy blue suitable for white HTML headline overlay; brighter right half with pale blue daylight and restrained warm sunlight. Sophisticated believable photography, calm aspirational mood, realistic airport details, no excessive orange, no collage, no rounded frame, no construction workers, no text, no logos, no watermarks. Keep people and airplane within central-right area for responsive crops.
