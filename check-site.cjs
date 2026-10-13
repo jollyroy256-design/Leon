@@ -18,7 +18,7 @@ const fs=require('node:fs');
  await page.locator('#consent').check();await page.locator('.submit').click();
  await page.waitForSelector('#form-status.success');
  console.log('Form:',await page.locator('#form-status').innerText());
- await page.locator('.consent .privacy-link').click();if(!await page.locator('dialog').isVisible())throw Error('Privacy dialog failed');await page.keyboard.press('Escape');
+ await page.locator('.consent .privacy-link').click();if(!await page.locator('#privacy-dialog').isVisible())throw Error('Privacy dialog failed');await page.keyboard.press('Escape');
  await page.setViewportSize({width:375,height:812});await page.goto('http://127.0.0.1:4173',{waitUntil:'networkidle'});
  await page.locator('.menu-toggle').click();if(!await page.locator('#navigation').isVisible())throw Error('Mobile menu failed');
  await page.locator('#navigation a').first().click();if(await page.locator('#navigation').isVisible())throw Error('Mobile close failed');
