@@ -307,3 +307,27 @@ main .role-card h3,main .role-card:nth-child(4) h3{font-size:var(--card-size);fo
 @media(min-width:901px) and (max-width:1050px){.nav nav{gap:12px}.nav-trigger{font-size:16px;gap:4px}.nav .brand img{width:125px}.nav nav>a:not(.button){font-size:16px}}
 @media(max-width:900px){.nav nav{max-height:calc(100dvh - 105px);overflow-y:auto;overscroll-behavior:contain;background:rgba(248,251,254,.97);backdrop-filter:blur(24px);box-shadow:0 20px 32px #06265c14}.nav-topic{width:100%;border-bottom:1px solid #06265c12}.nav-trigger{width:100%;justify-content:space-between;padding:15px 0;font-size:19px}.nav-dropdown,.nav-topic:last-of-type .nav-dropdown{position:static;width:100%;margin:0 0 14px;padding:15px 6px 6px;border-radius:14px;box-shadow:0 4px 16px #06265c08;background:linear-gradient(135deg,#ffffffee,#eef5fae6)}.nav-dropdown:before{display:none}.nav-dropdown-label{font-size:12px;margin:0 10px 6px;padding-bottom:10px}.nav-dropdown-link{padding:12px 8px;gap:10px}.nav-dropdown-link strong{font-size:15px}.nav-dropdown-link small{font-size:14px}.nav-link-arrow{display:none}}
 @media(prefers-reduced-motion:reduce){.nav-dropdown{animation:none}.nav-trigger,.nav-trigger>svg,.nav-dropdown-link,.nav-link-arrow{transition:none}}
+/* LEON glass surfaces: pearl light, globe blue and a restrained crown-gold glow. */
+:root{--glass-surface:linear-gradient(135deg,rgba(255,255,255,.86),rgba(249,252,255,.62));--glass-edge:rgba(255,255,255,.92);--glass-shadow:0 16px 42px -26px rgba(6,38,92,.25),inset 0 1px 0 rgba(255,255,255,.95)}
+body{background-color:#eaf1f7;background-image:radial-gradient(ellipse 75% 650px at 0% 1100px,#bfdff0b3,transparent 75%),radial-gradient(ellipse 65% 700px at 100% 1600px,#f1ddb780,transparent 75%),radial-gradient(ellipse 85% 1000px at 0% 3000px,#b9d8ef9c,transparent 75%),radial-gradient(ellipse 70% 900px at 100% 4200px,#d6e8ecbf,transparent 75%),linear-gradient(120deg,#f4f8fb,#e9f1f8 50%,#f5f6f4);background-repeat:no-repeat}
+header{background:rgba(250,253,255,.84);border-bottom:1px solid var(--glass-edge);box-shadow:0 4px 24px #06265c06;backdrop-filter:blur(22px) saturate(140%);-webkit-backdrop-filter:blur(22px) saturate(140%)}
+.recruitment-overview,.opportunities,.destinations,.enquiry-section{background:transparent}
+.recruitment-overview,.destinations{border-bottom:1px solid #ffffffb3}
+.support-grid article,.role-card,.role-card-text,.steps article,.enquiry-section form{background:var(--glass-surface);border:1px solid var(--glass-edge);box-shadow:var(--glass-shadow);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.support-grid i,.role-symbol>i{background:#ffffff8c;border:1px solid #fff;box-shadow:inset 0 1px 0 #fff}
+.role-image{box-shadow:0 1px 0 #ffffffdb}
+.filter:not(.active){background:#ffffff66;border-color:#ffffffd9}
+.service-rows{padding:8px 28px;border:1px solid var(--glass-edge);border-radius:20px;background:var(--glass-surface);box-shadow:var(--glass-shadow)}
+.service-row:last-child{border-bottom:0}.service-row:hover{background:#ffffff65}
+.country-name{background:#f8fcffd9}.country-flag{border-color:#ffffffeb;box-shadow:0 10px 26px #06265c1c}
+.orbit-guide{border-color:#8daec442}.orbit-guide:after{border-color:#8daec442}
+.faqs{padding:6px 28px;background:var(--glass-surface);border:1px solid var(--glass-edge);border-radius:20px;box-shadow:var(--glass-shadow)}
+.faqs details:last-child{border-bottom:0}
+.enquiry-section input,.enquiry-section select,.enquiry-section textarea{background:#ffffffb8;border-color:#b9cbda}
+.employers{background:radial-gradient(ellipse at 85% 5%,#31769f88,transparent 65%),linear-gradient(125deg,#06265cf5,#153d63f2);border-top:1px solid #ffffff70;border-bottom:1px solid #ffffff70;box-shadow:inset 0 1px 0 #ffffff30}
+footer{background:linear-gradient(120deg,#06265cf5,#123452f5);border-top:1px solid #ffffff40}
+.mobile-dock{background:#f7fbffdf;border-top-color:#fff;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+@media(hover:hover) and (pointer:fine){.role-card:hover{background:linear-gradient(135deg,#fffffff2,#f8fcffcf);border-color:white;box-shadow:0 20px 44px -25px #06265c55,inset 0 1px 0 white}}
+@media(max-width:600px){.service-rows,.faqs{padding:4px 18px;border-radius:16px}.service-row{gap:10px;grid-template-columns:20px 1fr 40px}.support-grid article,.role-card,.role-card-text,.steps article,.enquiry-section form{backdrop-filter:none;-webkit-backdrop-filter:none;background:linear-gradient(135deg,#ffffffeb,#f7fbffd1)}}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){header{background:#f7fbff}.support-grid article,.role-card,.steps article,.enquiry-section form{background:#f7fbff}}
+@media(min-width:901px){.nav nav{background:transparent}}
