@@ -3,6 +3,7 @@ const {chromium}=require('C:/Users/ASUS/.cache/codex-runtimes/codex-primary-runt
  const browser=await chromium.launch({headless:true,channel:'msedge'});
  const page=await browser.newPage({viewport:{width:1440,height:1000}});
  await page.goto('http://127.0.0.1:4173',{waitUntil:'networkidle'});
+ await page.locator('img').evaluateAll(imgs=>Promise.all(imgs.map(i=>{i.loading='eager';return i.decode();})));
  const images=await page.locator('img').evaluateAll(nodes=>nodes.map(n=>({src:n.src,loaded:n.complete&&n.naturalWidth>0})));
  if(images.some(i=>!i.loaded))throw Error('An image failed to load');
  if(new Set(images.map(i=>i.src)).size!==images.length)throw Error('Repeated image');

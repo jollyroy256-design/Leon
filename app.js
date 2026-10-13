@@ -187,3 +187,21 @@ bookingDialog.addEventListener('click', event => {
   const bounds = bookingDialog.getBoundingClientRect();
   if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) bookingDialog.close();
 });
+// Animate the destination compass only while visible; hover/focus and user pause stop it.
+const destinationsSection = document.querySelector('.destinations');
+const orbitToggle = document.querySelector('.orbit-toggle');
+let destinationsVisible = false;
+function syncDestinationMotion() {
+  destinationsSection.classList.toggle('in-view', destinationsVisible && !document.hidden);
+}
+new IntersectionObserver(entries => {
+  destinationsVisible = entries[0].isIntersecting;
+  syncDestinationMotion();
+}, {threshold:.1}).observe(destinationsSection);
+orbitToggle.addEventListener('click', () => {
+  const paused = orbitToggle.getAttribute('aria-pressed') !== 'true';
+  orbitToggle.setAttribute('aria-pressed', String(paused));
+  orbitToggle.textContent = paused ? 'Resume flag motion' : 'Pause flag motion';
+  destinationsSection.classList.toggle('motion-paused', paused);
+});
+document.addEventListener('visibilitychange', syncDestinationMotion);
