@@ -32,7 +32,7 @@ The LEON logo is based on the supplied brand artwork. Workforce imagery was crea
 
 ## Consultation calendar
 
-The homepage calendar collects a preferred date (tomorrow through the next 90 days) and time in Asia/Kolkata (IST). Continuing attaches the request to the enquiry form, where it can be reviewed, changed or removed. On submission, the preference is saved with the existing enquiry message; it does not reserve a slot or send a calendar invitation. No live availability or scheduling provider is connected.
+The “Book an expert” buttons in the hero and mobile quick actions open a modal calendar. It collects a preferred date (tomorrow through the next 90 days) and time in Asia/Kolkata (IST). Continuing attaches the request to the enquiry form, where it can be reviewed, changed or removed. On submission, the preference is saved with the existing enquiry message; it does not reserve a slot or send a calendar invitation. No live availability or scheduling provider is connected.
 
 ## Vercel deployment
 

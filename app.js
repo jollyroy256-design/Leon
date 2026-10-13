@@ -164,6 +164,7 @@ document.querySelector('#booking-continue').addEventListener('click',()=>{
   pendingBooking={date:chosenDate,time:bookingTime.value};
   bookingSummary.querySelector('p').textContent=`${dateLabel(new Date(chosenDate+'T00:00:00Z'))} at ${bookingTime.value} IST. Subject to confirmation.`;
   bookingSummary.hidden=false;
+  bookingDialog.close();
   document.querySelector('#enquire').scrollIntoView({behavior:motionPreference.matches?'instant':'smooth'});
   document.querySelector('#name').focus({preventScroll:true});
 });
@@ -171,3 +172,18 @@ function clearBooking() {pendingBooking=null;chosenDate='';bookingTime.value='';
 document.querySelector('#booking-remove').addEventListener('click',()=>{clearBooking();document.querySelector('#service').focus();});
 form.addEventListener('reset',clearBooking);
 renderCalendar();
+
+// Native dialog provides keyboard containment, Escape dismissal and focus restoration.
+const bookingDialog = document.querySelector('#booking');
+document.querySelectorAll('[data-open-booking]').forEach(button => button.addEventListener('click', () => {
+  renderCalendar();
+  bookingDialog.showModal();
+  document.body.classList.add('booking-open');
+}));
+document.querySelector('.booking-close').addEventListener('click', () => bookingDialog.close());
+bookingDialog.addEventListener('close', () => document.body.classList.remove('booking-open'));
+bookingDialog.addEventListener('click', event => {
+  if (event.target !== bookingDialog) return;
+  const bounds = bookingDialog.getBoundingClientRect();
+  if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) bookingDialog.close();
+});
