@@ -28,13 +28,8 @@ const sectionObserver = new IntersectionObserver(entries => {
 }, {rootMargin:'-15% 0px -65% 0px'});
 document.querySelectorAll('#services,#opportunities,#process,#employers,#enquire').forEach(section => sectionObserver.observe(section));
 
-// Independent hero planes echo the supplied layered parallax reference.
+// Scroll-linked depth keeps native scrolling and reduces movement on small screens.
 const heroScene = document.querySelector('.hero');
-const heroAtmosphere = document.createElement('div');
-heroAtmosphere.className = 'hero-atmosphere';
-heroAtmosphere.setAttribute('aria-hidden', 'true');
-heroAtmosphere.innerHTML = '<div class="hero-grid-plane"></div><div class="hero-glow-plane"></div><div class="hero-orbit-plane"></div><div class="hero-horizon-plane"></div>';
-heroScene.prepend(heroAtmosphere);
 const motionPreference = matchMedia('(prefers-reduced-motion: reduce)');
 const photoLayers = [...document.querySelectorAll('.hero-visual, .role-image')];
 const visiblePhotos = new Set();
@@ -50,10 +45,9 @@ function paintScrollDepth() {
   const heroBounds = heroScene.getBoundingClientRect();
   const heroProgress = Math.max(0, Math.min(1, -heroBounds.top / heroBounds.height));
   const depth = mobile ? 0.35 : 1;
-  heroScene.style.setProperty('--grid-drift', `${heroProgress * 190 * depth}px`);
-  heroScene.style.setProperty('--glow-drift', `${heroProgress * 135 * depth}px`);
-  heroScene.style.setProperty('--orbit-drift', `${heroProgress * 85 * depth}px`);
-  heroScene.style.setProperty('--title-drift', `${heroProgress * 55 * depth}px`);
+  heroScene.style.setProperty('--portrait-drift', `${heroProgress * 38 * depth}px`);
+  heroScene.style.setProperty('--route-drift', `${heroProgress * -42 * depth}px`);
+  heroScene.style.setProperty('--ticket-drift', `${heroProgress * -22 * depth}px`);
   const updates = [...visiblePhotos].map(layer => {
     const bounds = layer.getBoundingClientRect();
     const progress = Math.max(-1, Math.min(1, (viewport - bounds.top * 2 - bounds.height) / (viewport + bounds.height)));
@@ -74,7 +68,7 @@ function syncMotionPreference() {
   document.body.classList.toggle('parallax-enabled', !motionPreference.matches);
   if (motionPreference.matches) {
     photoLayers.forEach(layer => layer.style.removeProperty('--photo-offset'));
-    ['--grid-drift','--glow-drift','--orbit-drift','--title-drift'].forEach(name => heroScene.style.removeProperty(name));
+    ['--portrait-drift','--route-drift','--ticket-drift','--pointer-x','--pointer-y'].forEach(name => heroScene.style.removeProperty(name));
   }
   scheduleScrollDepth();
 }
@@ -86,3 +80,16 @@ document.addEventListener('visibilitychange', () => {
   else scheduleScrollDepth();
 });
 syncMotionPreference();
+
+const heroStage = document.querySelector('.hero-stage');
+const finePointer = matchMedia('(hover: hover) and (pointer: fine)');
+heroStage.addEventListener('pointermove', event => {
+  if (motionPreference.matches || !finePointer.matches) return;
+  const bounds = heroStage.getBoundingClientRect();
+  heroScene.style.setProperty('--pointer-x', `${((event.clientX - bounds.left) / bounds.width - .5) * 12}px`);
+  heroScene.style.setProperty('--pointer-y', `${((event.clientY - bounds.top) / bounds.height - .5) * 10}px`);
+});
+heroStage.addEventListener('pointerleave', () => {
+  heroScene.style.setProperty('--pointer-x', '0px');
+  heroScene.style.setProperty('--pointer-y', '0px');
+});
