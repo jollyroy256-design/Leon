@@ -154,6 +154,18 @@ a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible,s
 @media(max-width:600px){:root{--title-size:34px;--card-size:22px;--body-size:16px}.roles-grid{grid-template-columns:1fr}.role-image{height:220px}.role-symbol{flex-direction:row;align-items:center}.hero-actions .button{font-size:15px}.mobile-dock a{font-size:12px}.form-top{flex-wrap:wrap}}
 
 /* Larger top navigation text. */
+/* Layered horizon hero, adapted from the supplied motion references. */
+.hero{isolation:isolate;padding-top:85px}
+.hero-atmosphere{position:absolute;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.hero-grid-plane{position:absolute;inset:-25% -10%;background-image:linear-gradient(#75b9ec18 1px,transparent 1px),linear-gradient(90deg,#75b9ec18 1px,transparent 1px);background-size:88px 88px;mask-image:radial-gradient(ellipse at 50% 15%,#000,transparent 68%);transform:translate3d(0,var(--grid-drift,0px),0)}
+.hero-glow-plane{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 110%,#0074c890,transparent 64%);transform:translate3d(0,var(--glow-drift,0px),0)}
+.hero-orbit-plane{position:absolute;width:110%;height:380px;left:-5%;bottom:-270px;border:1px solid #edbb4270;border-radius:50%;box-shadow:0 -12px 75px #0074c830;transform:translate3d(0,var(--orbit-drift,0px),0)}
+.hero-horizon-plane{position:absolute;width:150%;height:440px;left:-25%;bottom:-397px;border-radius:50%;background:var(--navy);border-top:1px solid #8dcdf338;box-shadow:0 -18px 70px #0074c828}
+.hero-copy>h1{transform:translate3d(0,var(--title-drift,0px),0)}
+.hero .service-ribbon{position:relative;z-index:2;margin-top:86px;background:#06265c70}
+@media(max-width:600px){.hero{padding-top:48px}.hero-grid-plane{background-size:58px 58px}.hero .service-ribbon{margin-top:40px}.hero-orbit-plane{width:170%;left:-35%;bottom:-300px}}
+@media(prefers-reduced-motion:reduce){.hero-grid-plane,.hero-glow-plane,.hero-orbit-plane,.hero-copy>h1{transform:none!important}}
+
 .nav nav{font-size:17px}
 .nav nav .button{font-size:18px}
 @media(max-width:1150px) and (min-width:901px){.nav nav{gap:16px}.nav .brand-descriptor{display:none}}
