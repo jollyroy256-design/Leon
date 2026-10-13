@@ -331,3 +331,31 @@ footer{background:linear-gradient(120deg,#06265cf5,#123452f5);border-top:1px sol
 @media(max-width:600px){.service-rows,.faqs{padding:4px 18px;border-radius:16px}.service-row{gap:10px;grid-template-columns:20px 1fr 40px}.support-grid article,.role-card,.role-card-text,.steps article,.enquiry-section form{backdrop-filter:none;-webkit-backdrop-filter:none;background:linear-gradient(135deg,#ffffffeb,#f7fbffd1)}}
 @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){header{background:#f7fbff}.support-grid article,.role-card,.steps article,.enquiry-section form{background:#f7fbff}}
 @media(min-width:901px){.nav nav{background:transparent}}
+/* Editorial depth: large photographic openings and a navy opportunity gallery. */
+body{background-color:#edf3f7;background-image:radial-gradient(ellipse 80% 850px at 0 1000px,#bddfee99,transparent 72%),radial-gradient(ellipse 70% 950px at 100% 3600px,#d3e7f2aa,transparent 72%),linear-gradient(115deg,#f7f9fa,#e8f0f6 55%,#f6f4ef)}
+.recruitment-overview{padding-top:100px;padding-bottom:100px}
+.support-grid{gap:0;border:1px solid #fff;border-radius:22px;overflow:hidden;background:linear-gradient(115deg,#ffffffdc,#ffffff73);box-shadow:0 20px 60px -40px #06265c55}
+.support-grid article{position:relative;padding:34px;border:0;border-right:1px solid #b4cad84d;border-radius:0;box-shadow:none;background:transparent;backdrop-filter:none}
+.support-grid article:last-child{border-right:0}
+.support-grid i{width:48px;height:48px;border-radius:50%;margin-bottom:28px}
+.opportunities{position:relative;background:radial-gradient(ellipse at 100% 0,#285a77a8,transparent 50%),linear-gradient(140deg,#071f3b,#102f4c 60%,#09243d);border-block:1px solid #ffffff80;padding:90px 0}
+.opportunities .section-head h2,.opportunities .section-label{color:#f7fbff}.opportunities .section-head>p,.opportunities .category-note,.opportunities .israel-banner p{color:#bdcddd}.opportunities .filter{color:#dae6ef;background:#ffffff08;border:1px solid #ffffff26}.opportunities .filter.active{background:#edf4f9;color:#06265c;border-color:#fff}.opportunities .filter:hover{background:#ffffff24}.opportunities .filter.active:hover{background:#fff}
+.roles-grid{grid-template-columns:repeat(6,minmax(0,1fr));gap:26px}
+.role-card,.role-card-featured{grid-column:span 2;padding:10px 10px 0;border-radius:20px;overflow:hidden;background:linear-gradient(145deg,#fffffff2,#eaf2f8eb);border:1px solid #ffffffb3;box-shadow:0 18px 40px -24px #0008;backdrop-filter:none;position:relative;transition:transform .35s cubic-bezier(.2,.7,.2,1),box-shadow .35s,border-color .35s}
+.role-card:nth-child(1),.role-card:nth-child(2){grid-column:span 3}
+.role-image{height:250px;border-radius:12px;margin-bottom:24px}
+.role-card:nth-child(1) .role-image,.role-card:nth-child(2) .role-image{height:320px}
+.role-card h3,.role-card:nth-child(4) h3{margin-left:18px;margin-right:18px}.role-card>p{margin:12px 18px 24px}.role-card button{width:calc(100% - 36px);margin-inline:18px;min-height:64px;justify-content:space-between}.role-card button span{display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:#06265c0a}
+.role-card-text,.role-card-text:nth-last-child(2),.role-card-text:last-child{grid-column:span 3;padding:28px 10px 0;background:linear-gradient(130deg,#eff7fcf0,#dbeaf4e6)}
+.role-card-text .role-symbol{padding:0 18px 24px}.role-symbol>i{border-radius:50%}
+.opportunities .israel-banner{border-top-color:#ffffff29}.opportunities .israel-banner h3{color:white}.opportunities .israel-banner .button{background:#ffffff0c;border-color:#ffffff55;color:white}
+.destinations{padding:100px 0;background:linear-gradient(135deg,#ffffff30,#dae9f15c)}
+.service-rows{box-shadow:0 28px 65px -45px #06265c66;border-radius:24px}.service-row button{transition:background .25s,transform .25s}.service-row:hover button{background:#06265c;color:white;transform:rotate(-8deg)}
+.steps article{position:relative;border-radius:18px;background:linear-gradient(140deg,#fffffff0,#edf5fa99);padding:30px 26px;box-shadow:0 16px 36px -30px #06265c66}.step-number{font-size:32px;color:#67879e;letter-spacing:-1px}
+.support-grid article:after,.role-card:after{content:'';position:absolute;inset:0;pointer-events:none;border-radius:inherit;background:radial-gradient(350px circle at var(--light-x,50%) var(--light-y,0%),#ffffff40,transparent 70%);opacity:0;transition:opacity .3s}
+@media(hover:hover) and (pointer:fine){.role-card:hover{transform:translateY(-7px);box-shadow:0 28px 50px -22px #0008;border-color:white}.role-card:hover:after,.support-grid article:hover:after{opacity:1}.role-card:hover .role-image img{scale:1.045}}
+@media(max-width:1100px){.roles-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.role-card,.role-card-featured,.role-card:nth-child(1),.role-card:nth-child(2),.role-card-text,.role-card-text:nth-last-child(2),.role-card-text:last-child{grid-column:auto}.role-card:last-child{grid-column:1/-1}.role-image,.role-card:nth-child(1) .role-image,.role-card:nth-child(2) .role-image{height:250px}.support-grid article{padding:26px}}
+@media(max-width:600px){.recruitment-overview,.opportunities,.destinations{padding-block:56px}.support-grid{gap:0;border-radius:18px}.support-grid article{border-right:0;border-bottom:1px solid #b4cad84d;padding:26px}.support-grid article:last-child{border-bottom:0}.roles-grid{grid-template-columns:1fr;gap:24px}.role-card,.role-card:last-child{grid-column:auto}.role-image,.role-card:nth-child(1) .role-image,.role-card:nth-child(2) .role-image{height:260px}.role-card h3,.role-card:nth-child(4) h3{margin-inline:12px}.role-card>p{margin-inline:12px}.role-card button{margin-inline:12px;width:calc(100% - 24px)}.steps article{padding:26px 22px}}
+@media(prefers-reduced-motion:reduce){.role-card:hover,.service-row:hover button{transform:none}.role-card:hover .role-image img{scale:1}.role-card:after,.support-grid article:after{display:none}}
+.steps{grid-template-columns:repeat(3,minmax(0,1fr))}.steps article{min-width:0;overflow-wrap:anywhere}
+@media(max-width:600px){.steps{grid-template-columns:1fr}}

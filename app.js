@@ -225,3 +225,12 @@ orbitToggle.addEventListener('click', () => {
   destinationsSection.classList.toggle('motion-paused', paused);
 });
 document.addEventListener('visibilitychange', syncDestinationMotion);
+// A quiet surface highlight follows deliberate pointer movement; no idle animation.
+document.querySelectorAll('.role-card,.support-grid article').forEach(card=>{
+ let lightFrame=0;
+ card.addEventListener('pointermove',event=>{
+  if(motionPreference.matches||!finePointer.matches||lightFrame)return;
+  lightFrame=requestAnimationFrame(()=>{const rect=card.getBoundingClientRect();card.style.setProperty('--light-x',`${event.clientX-rect.left}px`);card.style.setProperty('--light-y',`${event.clientY-rect.top}px`);lightFrame=0;});
+ },{passive:true});
+ card.addEventListener('pointerleave',()=>{cancelAnimationFrame(lightFrame);lightFrame=0;});
+});
