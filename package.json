@@ -5,6 +5,14 @@
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js",
-    "build": "node build.js"
+    "build": "node build.js",
+    "prestart": "npm run build",
+    "predev": "npm run build"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.117.3"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.2"
   }
 }

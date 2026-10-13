@@ -4,7 +4,7 @@ const path = require('node:path');
 const crypto = require('node:crypto');
 const root = __dirname;
 const port = Number(process.env.PORT || 4173);
-const allowed = new Set(['/index.html', '/styles.css', '/app.js']);
+const allowed = new Set(['/index.html', '/styles.css', '/app.js', '/account.css', '/account.html']);
 const mime = {'.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8','.js':'text/javascript; charset=utf-8','.webp':'image/webp','.jpeg':'image/jpeg','.png':'image/png','.svg':'image/svg+xml'};
 http.createServer(async (req,res) => {
   const send = (status,obj) => {res.writeHead(status, {'Content-Type':'application/json','Cache-Control':'no-store'});res.end(JSON.stringify(obj));};
@@ -29,6 +29,21 @@ http.createServer(async (req,res) => {
   let pathname;
   try {pathname=decodeURIComponent(url.pathname);} catch {return send(400,{error:'Invalid path.'});}
   if(pathname==='/')pathname='/index.html';
+  if(['/sign-in.html','/sign-up.html','/reset-password.html'].includes(pathname))pathname='/account.html';
+  if(pathname==='/auth-config.js') {
+    try {
+      const config = require('./auth-config.cjs')();
+      res.writeHead(200, {'Content-Type':'text/javascript; charset=utf-8','Cache-Control':'no-store'});
+      return res.end(req.method==='HEAD'?undefined:'window.LEON_AUTH = '+JSON.stringify(config)+';');
+    } catch { return send(503,{error:'Account configuration is unavailable.'}); }
+  }
+  if(pathname==='/auth-client.js') {
+    return fs.readFile(path.join(root,'dist','auth-client.js'),(err,content)=>{
+      if(err)return send(503,{error:'Run npm run build to prepare account access.'});
+      res.writeHead(200,{'Content-Type':'text/javascript; charset=utf-8','Cache-Control':'no-cache'});
+      res.end(req.method==='HEAD'?undefined:content);
+    });
+  }
   if(!allowed.has(pathname) && !/^\/assets\/[a-zA-Z0-9_.-]+$/.test(pathname))return send(404,{error:'Not found.'});
   const file=path.join(root,pathname);
   fs.readFile(file,(err,content)=>{if(err)return send(404,{error:'Not found.'});res.writeHead(200,{'Content-Type':mime[path.extname(file)]||'application/octet-stream','X-Content-Type-Options':'nosniff','Cache-Control':'no-cache'});res.end(req.method==='HEAD'?undefined:content);});

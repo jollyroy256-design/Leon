@@ -278,3 +278,6 @@ main .role-card h3,main .role-card:nth-child(4) h3{font-size:var(--card-size);fo
 @media(prefers-reduced-motion:reduce){.country-stop{animation:none!important}.country-stop:hover .country-flag,.country-stop:focus-visible .country-flag{scale:1}.orbit-toggle{display:none}}
 .country-orbit{overflow:clip}
 @supports(offset-path:ellipse(40% 35% at 50% 50%)){@media(min-width:601px){.country-stop{offset-path:ellipse(calc(50% - 66px) 35% at 50% 50%)}.orbit-guide{left:66px;right:66px}}}
+/* Account access stays legible alongside the primary navigation. */
+[data-auth-signup][hidden]{display:none!important}
+@media(min-width:901px) and (max-width:1400px){.nav .brand-descriptor{display:none}.nav nav{gap:18px}.nav nav>a:not(.button){font-size:17px}}
