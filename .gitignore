@@ -1,0 +1,10 @@
+.venv/
+data/
+node_modules/
+*.log
+test-results/
+/*.png
+/reference-content.txt
+/logo-edit-prompt.txt
+/assets/island.png
+/README.txt

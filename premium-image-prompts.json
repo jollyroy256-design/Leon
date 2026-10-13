@@ -1,0 +1,8 @@
+{
+  "mode": "Built-in GPT image generation; outputs converted to 800px WebP for the website",
+  "assets": [
+    {"path":"assets/welding.webp","prompt":"Photorealistic premium editorial recruitment photography, adult Indian male welder wearing proper protective welding mask and navy protective workwear, welding at a modern organized industrial workshop, warm welding sparks, rich navy and restrained amber palette, dignified professional at work, elegant cinematic natural photographic quality. Landscape 4:3 crop suitable for website role card, no text, no logos, no watermark."},
+    {"path":"assets/care.webp","prompt":"Photorealistic premium editorial recruitment photography, adult Indian female caregiver in simple navy scrubs assisting a seated elderly person in a bright modern home, warm kind candid interaction, dignified professional care, natural afternoon light, restrained neutral colors, elegant magazine photography, landscape 4:3 website role card composition, no text, no logos, no watermark."},
+    {"path":"assets/retail.webp","prompt":"Photorealistic premium editorial recruitment photography, adult Indian male supermarket worker in clean navy uniform arranging fresh produce in a bright modern grocery store, capable approachable expression, organized beautiful shelves softly blurred, realistic natural light, restrained navy with fresh natural colors, magazine quality photograph, landscape 4:3 website role card composition, no text, no logos, no watermark."}
+  ]
+}

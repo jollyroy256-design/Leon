@@ -1,0 +1,32 @@
+const {chromium}=require('C:/Users/ASUS/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright');
+const fs=require('node:fs');
+(async()=>{
+ const browser=await chromium.launch({headless:true,channel:'msedge'});
+ const page=await browser.newPage({viewport:{width:1440,height:1000}});
+ const errors=[];page.on('pageerror',e=>errors.push(e.message));
+ await page.goto('http://127.0.0.1:4173',{waitUntil:'networkidle'});
+ await page.screenshot({path:'desktop-preview.png',fullPage:true});
+ for(const width of [375,768,1024,1440]){await page.setViewportSize({width,height:900});const overflow=await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth);if(overflow)throw Error('Horizontal overflow '+width);}
+ await page.setViewportSize({width:1440,height:1000});
+ await page.getByRole('button',{name:'Care & support',exact:true}).click();
+ if(await page.locator('.role-card:visible').count()!==1)throw Error('Role filter failed');
+ await page.locator('.role-card:visible button').click();
+ if(await page.locator('#interest').inputValue()!=='Caregiver')throw Error('Role prefill failed');
+ await page.getByRole('button',{name:'Discuss your hiring needs'}).click();
+ if(await page.locator('#service').inputValue()!=='Hire manpower')throw Error('Employer flow failed');
+ await page.locator('#name').fill('Preview Test');await page.locator('#phone').fill('9876543210');
+ await page.locator('#consent').check();await page.locator('.submit').click();
+ await page.waitForSelector('#form-status.success');
+ console.log('Form:',await page.locator('#form-status').innerText());
+ await page.locator('.consent .privacy-link').click();if(!await page.locator('dialog').isVisible())throw Error('Privacy dialog failed');await page.keyboard.press('Escape');
+ await page.setViewportSize({width:375,height:812});await page.goto('http://127.0.0.1:4173',{waitUntil:'networkidle'});
+ await page.locator('.menu-toggle').click();if(!await page.locator('#navigation').isVisible())throw Error('Mobile menu failed');
+ await page.locator('#navigation a').first().click();if(await page.locator('#navigation').isVisible())throw Error('Mobile close failed');
+ await page.evaluate(()=>window.scrollTo(0,0));await page.screenshot({path:'mobile-preview.png',fullPage:true});
+ if(errors.length)throw Error(errors.join('\n'));
+ const invalid=await page.request.post('http://127.0.0.1:4173/api/enquiries',{data:{name:'x'}});if(invalid.status()!==400)throw Error('Server validation failed');
+ const privateFile=await page.request.get('http://127.0.0.1:4173/data/enquiries.jsonl');if(privateFile.status()!==404)throw Error('Private data exposed');
+ const file='data/enquiries.jsonl';const rows=fs.readFileSync(file,'utf8').split('\n').filter(Boolean).filter(line=>{const row=JSON.parse(line);return !(row.name==='Preview Test'&&row.phone==='9876543210');});fs.writeFileSync(file,rows.length?rows.join('\n')+'\n':'');
+ console.log('PASS: 4 responsive widths, category filters, role prefill, employer routing, enquiry storage, validation, privacy dialog, mobile menu, private-file protection. No browser JavaScript errors.');
+ await browser.close();
+})().catch(e=>{console.error(e);process.exit(1)});
