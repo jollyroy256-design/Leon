@@ -281,3 +281,29 @@ main .role-card h3,main .role-card:nth-child(4) h3{font-size:var(--card-size);fo
 /* Account access stays legible alongside the primary navigation. */
 [data-auth-signup][hidden]{display:none!important}
 @media(min-width:901px) and (max-width:1400px){.nav .brand-descriptor{display:none}.nav nav{gap:18px}.nav nav>a:not(.button){font-size:17px}}
+/* Frosted navigation disclosures, with a compact accordion on touch screens. */
+.nav-topic{position:relative}
+.nav-trigger{display:flex;align-items:center;gap:7px;padding:14px 0;border:0;background:transparent;color:var(--navy);font:600 18px/1.4 'Source Sans 3',sans-serif;white-space:nowrap;cursor:pointer;transition:color .2s}
+.nav-trigger>svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.5;transition:transform .22s}
+.nav-trigger[aria-expanded=true]{color:var(--brand-blue)}
+.nav-trigger[aria-expanded=true]>svg{transform:rotate(180deg)}
+.nav-trigger:focus-visible,.nav-dropdown-link:focus-visible{outline:2px solid var(--brand-blue);outline-offset:4px;border-radius:6px}
+.nav-dropdown{position:absolute;top:calc(100% + 13px);left:-24px;width:360px;padding:22px 12px 12px;border:1px solid rgba(255,255,255,.9);border-radius:20px;background:linear-gradient(135deg,rgba(255,255,255,.96),rgba(240,247,253,.89));backdrop-filter:blur(28px) saturate(150%);-webkit-backdrop-filter:blur(28px) saturate(150%);box-shadow:0 24px 64px -18px #06265c50,0 4px 16px #06265c0c,inset 0 1px 0 white;animation:nav-reveal .2s ease-out;isolation:isolate}
+.nav-dropdown:before{content:'';position:absolute;left:0;right:0;top:-18px;height:18px}
+.nav-dropdown[hidden]{display:none!important}
+.nav-topic:last-of-type .nav-dropdown{left:auto;right:-24px}
+.nav-dropdown-label{margin:0 12px 12px;padding-bottom:14px;border-bottom:1px solid #06265c14;color:#526577;font:500 13px/1.4 'Manrope',sans-serif;letter-spacing:.02em}
+.nav-dropdown-link{display:flex;align-items:center;gap:12px;width:100%;padding:14px 12px;border:1px solid transparent;border-radius:12px;background:transparent;text-align:left;color:var(--navy);text-decoration:none;cursor:pointer;transition:background .2s,border-color .2s,box-shadow .2s}
+.nav-dropdown-link>i{display:grid;place-items:center;flex:0 0 39px;height:39px;border:1px solid #d6e2ed;border-radius:11px;background:#ffffffa6;color:#386181}
+.nav-dropdown-link svg{width:20px;height:20px}
+.nav-dropdown-link>span:not(.nav-link-arrow){flex:1;min-width:0}
+.nav-dropdown-link strong{display:block;font:600 15px/1.5 'Manrope',sans-serif;letter-spacing:-.02em}
+.nav-dropdown-link small{display:block;margin-top:3px;font:400 15px/1.4 'Source Sans 3',sans-serif;color:#526577}
+.nav-link-arrow{font-size:19px;color:#738aa0;transition:transform .2s,color .2s}
+.nav-dropdown-link:hover,.nav-dropdown-link:focus-visible{background:#ffffffc7;border-color:#fff;box-shadow:0 4px 12px #06265c06}
+.nav-dropdown-link:hover .nav-link-arrow{transform:translate(2px,-2px);color:var(--brand-blue)}
+@keyframes nav-reveal{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+@media(min-width:901px) and (max-width:1400px){.nav nav{gap:16px}.nav-trigger{font-size:17px}}
+@media(min-width:901px) and (max-width:1050px){.nav nav{gap:12px}.nav-trigger{font-size:16px;gap:4px}.nav .brand img{width:125px}.nav nav>a:not(.button){font-size:16px}}
+@media(max-width:900px){.nav nav{max-height:calc(100dvh - 105px);overflow-y:auto;overscroll-behavior:contain;background:rgba(248,251,254,.97);backdrop-filter:blur(24px);box-shadow:0 20px 32px #06265c14}.nav-topic{width:100%;border-bottom:1px solid #06265c12}.nav-trigger{width:100%;justify-content:space-between;padding:15px 0;font-size:19px}.nav-dropdown,.nav-topic:last-of-type .nav-dropdown{position:static;width:100%;margin:0 0 14px;padding:15px 6px 6px;border-radius:14px;box-shadow:0 4px 16px #06265c08;background:linear-gradient(135deg,#ffffffee,#eef5fae6)}.nav-dropdown:before{display:none}.nav-dropdown-label{font-size:12px;margin:0 10px 6px;padding-bottom:10px}.nav-dropdown-link{padding:12px 8px;gap:10px}.nav-dropdown-link strong{font-size:15px}.nav-dropdown-link small{font-size:14px}.nav-link-arrow{display:none}}
+@media(prefers-reduced-motion:reduce){.nav-dropdown{animation:none}.nav-trigger,.nav-trigger>svg,.nav-dropdown-link,.nav-link-arrow{transition:none}}

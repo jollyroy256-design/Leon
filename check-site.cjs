@@ -21,7 +21,7 @@ const fs=require('node:fs');
  await page.locator('.consent .privacy-link').click();if(!await page.locator('#privacy-dialog').isVisible())throw Error('Privacy dialog failed');await page.keyboard.press('Escape');
  await page.setViewportSize({width:375,height:812});await page.goto('http://127.0.0.1:4173',{waitUntil:'networkidle'});
  await page.locator('.menu-toggle').click();if(!await page.locator('#navigation').isVisible())throw Error('Mobile menu failed');
- await page.locator('#navigation a').first().click();if(await page.locator('#navigation').isVisible())throw Error('Mobile close failed');
+ await page.locator('.nav-trigger').first().click();await page.locator('#navigation a').first().click();if(await page.locator('#navigation').isVisible())throw Error('Mobile close failed');
  await page.evaluate(()=>window.scrollTo(0,0));await page.screenshot({path:'mobile-preview.png',fullPage:true});
  if(errors.length)throw Error(errors.join('\n'));
  const invalid=await page.request.post('http://127.0.0.1:4173/api/enquiries',{data:{name:'x'}});if(invalid.status()!==400)throw Error('Server validation failed');
